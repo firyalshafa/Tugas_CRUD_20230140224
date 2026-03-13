@@ -39,4 +39,110 @@
         <button type="submit" class="btn-save" id="btnSubmit">Simpan Data</button>
     </form>
 
+    <h2>Daftar KTP</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>No KTP</th>
+            <th>Nama</th>
+            <th>Alamat</th>
+            <th>Tgl Lahir</th>
+            <th>Gender</th>
+            <th>Aksi</th>
+        </tr>
+        </thead>
+        <tbody id="ktpTableBody"></tbody>
+    </table>
+</div>
+
+<script>
+    const API_URL = "http://localhost:8080/ktp";
+
+    $(document).ready(function() {
+        loadData();
+
+        // Operasi POST & PUT (Simpan/Update)
+        $("#ktpForm").submit(function(e) {
+            e.preventDefault();
+            let id = $("#ktpId").val();
+            let method = id ? "PUT" : "POST";
+            let url = id ? API_URL + "/" + id : API_URL;
+
+            let data = {
+                nomorKtp: $("#nomorKtp").val(),
+                namaLengkap: $("#namaLengkap").val(),
+                alamat: $("#alamat").val(),
+                tanggalLahir: $("#tanggalLahir").val(),
+                jenisKelamin: $("#jenisKelamin").val()
+            };
+
+            $.ajax({
+                url: url, type: method, contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function() {
+                    alert(id ? "Data berhasil diperbarui!" : "Data berhasil ditambahkan!");
+                    resetForm();
+                    loadData();
+                },
+                error: function(err) { alert("Terjadi kesalahan: " + err.responseText); }
+            });
+        });
+    });
+
+    // Operasi GET (Tampil Data)
+    function loadData() {
+        $.get(API_URL, function(data) {
+            let rows = "";
+            data.forEach(ktp => {
+                rows += `<tr>
+                    <td>${ktp.nomorKtp}</td>
+                    <td>${ktp.namaLengkap}</td>
+                    <td>${ktp.alamat}</td>
+                    <td>${ktp.tanggalLahir}</td>
+                    <td>${ktp.jenisKelamin}</td>
+                    <td>
+                        <button class="btn-edit" onclick="editData(${ktp.id})">Edit</button>
+                        <button class="btn-delete" onclick="deleteData(${ktp.id})">Hapus</button>
+                    </td>
+                </tr>`;
+            });
+            $("#ktpTableBody").html(rows);
+        });
+    }
+
+    // Operasi GET by ID (Untuk Edit)
+    function editData(id) {
+        $.get(API_URL + "/" + id, function(ktp) {
+            $("#ktpId").val(ktp.id);
+            $("#nomorKtp").val(ktp.nomorKtp).attr("disabled", true);
+            $("#namaLengkap").val(ktp.namaLengkap);
+            $("#alamat").val(ktp.alamat);
+            $("#tanggalLahir").val(ktp.tanggalLahir);
+            $("#jenisKelamin").val(ktp.jenisKelamin);
+            $("#btnSubmit").text("Perbarui Data").css("background-color", "#007bff");
+        });
+    }
+
+    // Operasi DELETE
+    function deleteData(id) {
+        if(confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+            $.ajax({
+                url: API_URL + "/" + id, type: "DELETE",
+                success: function(res) {
+                    alert(res);
+                    loadData();
+                }
+            });
+        }
+    }
+
+    function resetForm() {
+        $("#ktpId").val("");
+        $("#ktpForm")[0].reset();
+        $("#nomorKtp").attr("disabled", false);
+        $("#btnSubmit").text("Simpan Data").css("background-color", "#28a745");
+    }
+</script>
+
 </body>>
+</html>>
