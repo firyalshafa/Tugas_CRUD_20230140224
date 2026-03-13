@@ -20,3 +20,23 @@
         th { background-color: #007bff; color: white; }
     </style>
 </head>
+
+<body>
+<div class="container">
+    <h2>Form Input KTP</h2>
+    <form id="ktpForm">
+        <input type="hidden" id="ktpId">
+        <input type="text" id="nomorKtp" placeholder="Nomor KTP (Harus Unik)" required>
+        <input type="text" id="namaLengkap" placeholder="Nama Lengkap" required>
+        <div class="full">
+            <textarea id="alamat" placeholder="Alamat Lengkap"></textarea>
+        </div>
+        <input type="date" id="tanggalLahir" required title="Tanggal Lahir">
+        <select id="jenisKelamin">
+            <option value="Laki-laki">Laki-laki</option>
+            <option value="Perempuan">Perempuan</option>
+        </select>
+        <button type="submit" class="btn-save" id="btnSubmit">Simpan Data</button>
+    </form>
+
+</body>>
